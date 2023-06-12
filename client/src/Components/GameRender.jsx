@@ -4,14 +4,16 @@ function GameRender(props) {
   // props.board.forEach((value) => <Cell columns={value} />);
 
   return (
-    <div>
+    <div className="flex  ">
       {props.board.map((boardRow, rowIndex) => {
         return (
           <Row
             key={rowIndex}
+            index={rowIndex}
             boardRow={boardRow}
             dispatch={props.dispatch}
             win={props.win}
+            socket={props.socket}
           />
         );
       })}

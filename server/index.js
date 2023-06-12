@@ -1,19 +1,22 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require('socket.io');
-const io = new Server(server);
+import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
-app.get('/', (req, res) => {
-  console.log('connected');
-  res.send('Hi');
+const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ['http://127.0.0.1:5173'],
+  },
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  // ...
+  console.log(`User Joined with Id: ${socket.id}`);
+  socket.on('add_tile', (columnIndex) => {
+    console.log('Event Received');
+    io.emit('add_til', columnIndex);
+  });
 });
 
-server.listen(5173, () => {
-  console.log('listening on *:3000');
-});
+httpServer.listen(3000);

@@ -73,9 +73,10 @@ function checkWinLeftRightDiagonalBottom() {
 }
 
 const gameLogic = {
-  checkWin(gameBoard, checkTile) {
+  checkWin(gameBoard, checkTile, originalWin) {
     board = gameBoard;
     clickedTile = checkTile;
+    win = originalWin;
     checkWinHorizontal();
     checkWinVertical();
     checkWinLeftRightDiagonal();

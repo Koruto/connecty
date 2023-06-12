@@ -1,5 +1,3 @@
-import { ACTION_TYPE } from '../App';
-
 function Row(props) {
   const row = props.boardRow;
   function computeStyle(arrayValue) {
@@ -17,17 +15,21 @@ function Row(props) {
   */
 
   return (
-    <div className="flex my-[10px] bg-[#a4a6a7]">
+    <div
+      className="flex flex-col my-[10px] bg-[#a4a6a7] hover:bg-sky-700"
+      onClick={() => {
+        props.socket.emit('add_tile', props.index);
+        // console.log('Clicked Once');
+        // props.dispatch({
+        //   type: ACTION_TYPE.ADD_TILE,
+        //   payload: props.index,
+        // });
+      }}
+    >
       {row.map((boardCell, columnIndex) => {
         return (
           <div
             key={columnIndex}
-            onClick={() =>
-              props.dispatch({
-                type: ACTION_TYPE.ADD_TILE,
-                payload: columnIndex,
-              })
-            }
             className="h-[90px] bg-white m-[10px] w-[90px]"
           >
             <div
