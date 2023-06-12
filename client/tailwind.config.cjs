@@ -2,7 +2,12 @@
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        arvo: ['Arvo', 'serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 };
