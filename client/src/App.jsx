@@ -1,6 +1,15 @@
 import Game from './Game';
-import Homepage from './Components/Homepage';
+import HomePage from './Components/Homepage';
+import WaitingRoom from './Components/WaitingRoom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 export default function App() {
-  return <Homepage />;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/room/:roomName" element={<WaitingRoom />} />
+      </Routes>
+    </Router>
+  );
 }
