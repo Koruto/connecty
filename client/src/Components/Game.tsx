@@ -1,10 +1,11 @@
-import GameRender from './GameRender.jsx';
+import GameRender from './GameRender.js';
 import gameLogic from './GameLogic.js';
-import { useImmer, useImmerReducer } from 'use-immer';
-import { useEffect, useState, memo, useContext } from 'react';
-import { io } from 'socket.io-client';
+import { useImmerReducer } from 'use-immer';
+import { useEffect, useContext } from 'react';
+// import { io } from 'socket.io-client';
 // import { socket } from './sockets.js';
 import { SocketContext } from '../context/socket.js';
+import Board from '../types/Board.js';
 
 // const socket = io('http://localhost:3000');
 // const socket = '';
@@ -13,7 +14,7 @@ import { SocketContext } from '../context/socket.js';
 //   console.log('connection established');
 // });
 
-function reverseArray(board) {
+function reverseArray(board: Board) {
   const reversedArray = Array.from(
     { length: board[0].length },
     (_, columnIndex) => {
@@ -29,7 +30,15 @@ export const ACTION_TYPE = {
   RESET_GAME: 'reset_game',
 };
 
-const initialState = {
+interface BoardState {
+  board: Board;
+  currentPlayer: string;
+  win: boolean;
+  draw: boolean;
+  clickedTile: [null | number, null | number, null | string];
+}
+
+const initialState: BoardState = {
   board: [
     [null, null, null, null, null, null],
     [null, null, null, null, null, null],
@@ -45,7 +54,12 @@ const initialState = {
   clickedTile: [null, null, null],
 };
 
-function reducer(state, action) {
+interface BoardAction {
+  type: string;
+  payload: number;
+}
+
+function reducer(state: BoardState, action: BoardAction) {
   switch (action.type) {
     case ACTION_TYPE.ADD_TILE: {
       const inverseArray = reverseArray(state.board);
@@ -85,7 +99,12 @@ function reducer(state, action) {
   }
 }
 
-function Game(props) {
+interface GameProps {
+  role: string;
+  number: number;
+}
+
+const Game: React.FC<GameProps> = ({ role, number }) => {
   const [state, dispatch] = useImmerReducer(reducer, initialState);
   const socket = useContext(SocketContext);
 
@@ -102,7 +121,7 @@ function Game(props) {
   // }, []);
 
   useEffect(() => {
-    socket.on('add_til', (columnIndex, roomToCheck) => {
+    socket.on('add_til', (columnIndex: number, roomToCheck: string) => {
       console.log(columnIndex);
       const roomName = window.location.pathname.substring(6);
       if (roomName == roomToCheck) addTile(columnIndex);
@@ -112,14 +131,14 @@ function Game(props) {
     };
   }, [socket]);
 
-  function addTile(columnIndex) {
+  function addTile(columnIndex: number) {
     dispatch({
       type: ACTION_TYPE.ADD_TILE,
       payload: columnIndex,
     });
   }
 
-  console.log(props.role, props.number);
+  console.log(role, number);
 
   return (
     <>
@@ -131,12 +150,12 @@ function Game(props) {
       />
       <button
         className="bg-red-500"
-        onClick={() => dispatch({ type: ACTION_TYPE.RESET_GAME })}
+        onClick={() => dispatch({ type: ACTION_TYPE.RESET_GAME, payload: 0 })}
       >
         RESET
       </button>
     </>
   );
-}
+};
 
 export default Game;

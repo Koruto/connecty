@@ -1,8 +1,8 @@
-import { ReactComponent as Red } from '../Assets/Red.svg';
-import { io } from 'socket.io-client';
+import { ReactComponent as Red } from '../assets/Red.svg';
+// import { io } from 'socket.io-client';
 // import { socket } from '../sockets.js';
-import { useState, useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Link, useNavigate } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../context/socket';
 import generateRandomString from '../utils/generateRandomString';
 

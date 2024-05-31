@@ -1,14 +1,35 @@
-let board = null;
-let clickedTile = null;
+import Board from '../types/Board';
+
+let board: Board = [
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, null, null],
+];
+let clickedTile: [null | number, null | number, null | string] = [
+  null,
+  null,
+  null,
+];
 let win = false;
 /** check for draw */
-function highlightWin(i, j, x = clickedTile[0], y = clickedTile[1]) {
+function highlightWin(
+  i: number,
+  j: number,
+  x = clickedTile[0],
+  y = clickedTile[1]
+) {
+  if (!x || !y) return;
   for (let a = 0; a < 4; a++)
     board[x + a * i][y + a * j] = '9-' + clickedTile[2];
   win = true;
 }
 
 function checkWinHorizontal() {
+  if (!clickedTile[0]) return;
   let count = 0;
   for (const [index, tile] of board[clickedTile[0]].entries()) {
     if (tile == clickedTile[2]) count++;
@@ -21,6 +42,7 @@ function checkWinHorizontal() {
 }
 
 function checkWinVertical() {
+  if (!clickedTile[1]) return;
   let count = 0;
   for (const tile of board) {
     if (tile[clickedTile[1]] == clickedTile[2]) count++;
@@ -36,6 +58,7 @@ function checkWinLeftRightDiagonal() {
   let count = 0;
   let x = clickedTile[0];
   let y = clickedTile[1];
+  if (!x || !y) return;
   let minOfTwoCoords = Math.min(x, y);
   x = x - minOfTwoCoords;
   y = y - minOfTwoCoords;
@@ -54,6 +77,7 @@ function checkWinLeftRightDiagonalBottom() {
   let count = 0;
   let x = clickedTile[0];
   let y = clickedTile[1];
+  if (!x || !y) return;
   if (x + y <= 5) {
     x = x + y;
     y = 0;
@@ -73,7 +97,11 @@ function checkWinLeftRightDiagonalBottom() {
 }
 
 const gameLogic = {
-  checkWin(gameBoard, checkTile, originalWin) {
+  checkWin(
+    gameBoard: Board,
+    checkTile: [number | null, number | null, string | null],
+    originalWin: boolean
+  ) {
     board = gameBoard;
     clickedTile = checkTile;
     win = originalWin;
@@ -84,7 +112,7 @@ const gameLogic = {
 
     return win;
   },
-  checkDraw(gameBoard, win) {
+  checkDraw(gameBoard: Board, win: boolean) {
     if (win) return false;
     for (const tile of gameBoard[0]) {
       if (!tile) return false;

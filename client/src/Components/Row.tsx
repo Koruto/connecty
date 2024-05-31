@@ -1,8 +1,18 @@
-function Row(props) {
-  const row = props.boardRow;
-  function computeStyle(arrayValue) {
+import { Cell } from '../types/Board';
+
+interface RowProps {
+  index: number;
+  boardRow: Cell[];
+  dispatch: any;
+  win: boolean;
+  socket: any;
+}
+
+const Row: React.FC<RowProps> = ({ boardRow, socket, index, win }) => {
+  const row = boardRow;
+  function computeStyle(arrayValue: Cell) {
     if (arrayValue === null) return '';
-    if (arrayValue[0] == 9)
+    if (arrayValue[0] == '9')
       return arrayValue[2] == 'o' ? 'bg-blue-500' : 'bg-green-500';
     return arrayValue == 'one' ? 'bg-blue-600' : 'bg-green-600';
   }
@@ -19,11 +29,11 @@ function Row(props) {
       className="flex flex-col my-[10px] bg-[#a4a6a7] hover:bg-sky-700"
       onClick={() => {
         const roomName = window.location.pathname.substring(6);
-        props.socket.emit('add_tile', props.index, roomName);
+        socket.emit('add_tile', index, roomName);
         // console.log('Clicked Once');
-        // props.dispatch({
+        // dispatch({
         //   type: ACTION_TYPE.ADD_TILE,
-        //   payload: props.index,
+        //   payload: index,
         // });
       }}
     >
@@ -35,9 +45,7 @@ function Row(props) {
           >
             <div
               className={
-                (props.win && boardCell && boardCell[0] != 9
-                  ? 'opacity-50'
-                  : '') +
+                (win && boardCell && boardCell[0] != '9' ? 'opacity-50' : '') +
                 ' h-full rounded-[35%]' +
                 ' ' +
                 computeStyle(boardCell)
@@ -48,6 +56,6 @@ function Row(props) {
       })}
     </div>
   );
-}
+};
 
 export default Row;

@@ -1,13 +1,6 @@
-import { io } from 'socket.io-client';
-import { socket } from '../sockets.js';
 import { useEffect, useState, useContext } from 'react';
-import {
-  BrowserRouter as Router,
-  Link,
-  useParams,
-  Navigate,
-} from 'react-router-dom';
-import Game from './Game.jsx';
+import { useParams } from 'react-router-dom';
+import Game from './Game.js';
 import { SocketContext } from '../context/socket.js';
 
 // const socket = '';
@@ -22,20 +15,20 @@ export default function App() {
   const socket = useContext(SocketContext);
   const [socketConnected, setSocketConnected] = useState(false);
   let username;
-  let playerId;
+  let playerId: string | null = '';
 
-  async function validateSocketConnection() {
-    socket.on('connect', () => {
-      console.log('connection established');
-      console.log('playeer id is ' + socket.id);
-      if (!sessionStorage.getItem('id'))
-        sessionStorage.setItem('id', socket.id);
-      if (!sessionStorage.getItem('username'))
-        sessionStorage.setItem('username', 'Default');
+  // async function validateSocketConnection() {
+  //   socket.on('connect', () => {
+  //     console.log('connection established');
+  //     console.log('playeer id is ' + socket.id);
+  //     if (!sessionStorage.getItem('id'))
+  //       sessionStorage.setItem('id', socket.id);
+  //     if (!sessionStorage.getItem('username'))
+  //       sessionStorage.setItem('username', 'Default');
 
-      console.log('Emiiting event, ' + playerId);
-    });
-  }
+  //     console.log('Emiiting event, ' + playerId);
+  //   });
+  // }
 
   useEffect(() => {
     // const socket = io('http://localhost:3000');
@@ -69,19 +62,19 @@ export default function App() {
 
     // ! Emit a event and listen to it for each
 
-    socket.on('joinRoomSuccess', (role, num) => {
+    socket.on('joinRoomSuccess', (role: string, num: number) => {
       setRole(role);
       setNumber(num);
     });
 
-    socket.on('roomUpdate', (users) => {
+    socket.on('roomUpdate', (users: number) => {
       console.log('Room Updated');
       setNumOfUser(users);
       if (users >= 2) setGameReady(true);
     });
 
     return () => {
-      socket.emit('leave-room', playerId);
+      socket.emit('leaveRoom', playerId);
       socket.off('joinRoom', roomName);
       // socket.disconnect();
     };

@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
 
   //! NOT WORKING, the playerId doesnt match or something liketaht
 
-  socket.on('leave-room', (playerId) => {
+  socket.on('leaveRoom', (playerId) => {
     console.log(`A user left room ${socket.id}`);
     rooms.forEach((room, roomName) => {
       console.log(room, playerId, room[playerId]);
