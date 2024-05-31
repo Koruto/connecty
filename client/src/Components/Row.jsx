@@ -18,7 +18,8 @@ function Row(props) {
     <div
       className="flex flex-col my-[10px] bg-[#a4a6a7] hover:bg-sky-700"
       onClick={() => {
-        props.socket.emit('add_tile', props.index);
+        const roomName = window.location.pathname.substring(6);
+        props.socket.emit('add_tile', props.index, roomName);
         // console.log('Clicked Once');
         // props.dispatch({
         //   type: ACTION_TYPE.ADD_TILE,

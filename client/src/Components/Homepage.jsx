@@ -1,48 +1,48 @@
 import { ReactComponent as Red } from '../Assets/Red.svg';
 import { io } from 'socket.io-client';
-import { useState, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Link,
-  useParams,
-  Navigate,
-} from 'react-router-dom';
-
-function generateRandomString(length) {
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters.charAt(randomIndex);
-  }
-  return result;
-}
+// import { socket } from '../sockets.js';
+import { useState, useEffect, useContext } from 'react';
+import { BrowserRouter as Router, Link, useNavigate } from 'react-router-dom';
+import { SocketContext } from '../context/socket';
+import generateRandomString from '../utils/generateRandomString';
 
 export default function App() {
   const [visible, setVisible] = useState(0);
   const [roomName, setRoomName] = useState('');
   const [showNotification, setShowNotification] = useState(false);
+  const [username, setUsername] = useState('');
+  const socket = useContext(SocketContext);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const socket = io('http://localhost:3000');
+  // useEffect(() => {
+  //   // const socket = io('http://localhost:3000');
 
-    socket.on('connect', () => {
-      console.log('connection established');
-    });
-    if (roomName) socket.emit('createRoom', roomName);
+  //   socket.on('connect', () => {
+  //     console.log('connection established');
+  //   });
+  //   if (roomName) socket.emit('createRoom', roomName);
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [roomName]);
+  //   return () => {
+  //     // socket.disconnect();
+  //   };
+  // }, [roomName]);
 
   const handleClick = () => {
-    setVisible(1);
+    if (username == '') {
+      alert('Write Proper Name');
+      return;
+    }
+    setVisible(0);
     const roomLength = 8; // Specify the desired room length here
     const roomName = generateRandomString(roomLength);
     console.log(roomName);
     // Emit 'joinRoom' event with the room name
     setRoomName(roomName);
+
+    sessionStorage.setItem('username', username);
+    sessionStorage.setItem('id', socket.id);
+    socket.emit('createRoom', roomName);
+    navigate(`/room/${roomName}`);
     // socket.emit('joinRoom', roomName);
 
     // // Redirect to the room URL
@@ -82,6 +82,19 @@ export default function App() {
         <Red className="m-6" />
         <Red className="m-6" />
         <Red className="m-6" />
+      </div>
+      <div className="flex flex-col items-center mt-5">
+        <label className="font-arvo text-[#F0E7E6]" htmlFor="username">
+          Enter your username
+        </label>
+        <input
+          className="font-arvo text-[#2c2c2b]"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          name="username"
+          id="username"
+        />
       </div>
       <div className="flex justify-center items-center ">
         <button
